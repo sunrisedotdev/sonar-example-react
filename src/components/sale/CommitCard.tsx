@@ -1,4 +1,4 @@
-import { PrePurchaseFailureReason, GeneratePurchasePermitResponse, EntityID } from "@echoxyz/sonar-core";
+import { PrePurchaseFailureReason, GeneratePurchasePermitResponse, EntityID, Hex } from "@echoxyz/sonar-core";
 import { useState } from "react";
 import { paymentTokenAddress, saleUUID } from "../../config";
 import {
@@ -54,29 +54,29 @@ function readinessConfig(
 }
 
 function CommitSection({
-  entityID,
+  saleSpecificEntityID,
   generatePurchasePermit,
 }: {
-  entityID: EntityID;
+  saleSpecificEntityID: Hex;
   generatePurchasePermit: () => Promise<GeneratePurchasePermitResponse>;
 }) {
   const { commitWithPermit, entityState, entityStateError, awaitingTxReceipt, txReceipt, awaitingTxReceiptError } =
-    useSaleContract(entityID);
+    useSaleContract(saleSpecificEntityID);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>(undefined);
-  const [commitAmount, setCommitAmount] = useState<string>("1");
+  const [humanReadableAmount, setHumanReadableAmount] = useState<string>("1");
 
   const purchase = async () => {
     setLoading(true);
     setError(undefined);
     try {
       const purchasePermitResp = await generatePurchasePermit();
-      const amountInMicroUnits = BigInt(Math.floor(parseFloat(commitAmount) * 1e6));
+      const amount = BigInt(Math.floor(parseFloat(humanReadableAmount) * 1e6));
       await commitWithPermit({
         purchasePermitResp: purchasePermitResp,
         token: paymentTokenAddress,
-        amount: amountInMicroUnits,
+        amount,
       });
     } catch (error) {
       setError(error as Error);
@@ -100,15 +100,15 @@ function CommitSection({
             id="commitAmount"
             type="number"
             min="0"
-            value={commitAmount}
-            onChange={(e) => setCommitAmount(e.target.value)}
+            value={humanReadableAmount}
+            onChange={(e) => setHumanReadableAmount(e.target.value)}
             disabled={loading || awaitingTxReceipt}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
             placeholder="Enter amount"
           />
         </div>
         <button
-          disabled={loading || awaitingTxReceipt || !commitAmount || parseFloat(commitAmount) <= 0}
+          disabled={loading || awaitingTxReceipt || !humanReadableAmount || parseFloat(humanReadableAmount) <= 0}
           className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={purchase}
         >
@@ -136,7 +136,15 @@ function CommitSection({
   );
 }
 
-function CommitCard({ entityID, walletAddress }: { entityID: EntityID; walletAddress: `0x${string}` }) {
+function CommitCard({
+  entityID,
+  saleSpecificEntityID,
+  walletAddress,
+}: {
+  entityID: EntityID;
+  saleSpecificEntityID: Hex;
+  walletAddress: `0x${string}`;
+}) {
   const sonarPurchaser = useSonarPurchase({
     saleUUID,
     entityID,
@@ -160,7 +168,10 @@ function CommitCard({ entityID, walletAddress }: { entityID: EntityID; walletAdd
       </div>
 
       {sonarPurchaser.readyToPurchase && (
-        <CommitSection entityID={entityID} generatePurchasePermit={sonarPurchaser.generatePurchasePermit} />
+        <CommitSection
+          saleSpecificEntityID={saleSpecificEntityID}
+          generatePurchasePermit={sonarPurchaser.generatePurchasePermit}
+        />
       )}
 
       {!sonarPurchaser.readyToPurchase &&
