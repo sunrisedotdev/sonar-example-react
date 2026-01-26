@@ -3,13 +3,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { SonarProvider } from "@echoxyz/sonar-react";
 import { sonarConfig } from "./config";
-import { sepolia } from "wagmi/chains";
+import { baseSepolia } from "wagmi/chains";
 
 const config = createConfig(
   getDefaultConfig({
-    chains: [sepolia],
+    chains: [baseSepolia],
     transports: {
-      [sepolia.id]: http(),
+      [baseSepolia.id]: http(),
     },
 
     // Required API Keys
@@ -35,4 +35,3 @@ export function Provider({ children }: { children: React.ReactNode }) {
     </SonarProvider>
   );
 }
-

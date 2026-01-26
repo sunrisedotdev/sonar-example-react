@@ -3,7 +3,7 @@ import { ConnectKitButton } from "connectkit";
 import { useSonarAuth, useSonarEntity, useSonarEntities } from "@echoxyz/sonar-react";
 import { saleUUID, sonarHomeURL, sonarConfig } from "../config";
 import { useAccount } from "wagmi";
-import PurchaseCard from "../components/sale/PurchaseCard";
+import CommitCard from "../components/sale/CommitCard";
 import { SaleEligibility } from "@echoxyz/sonar-core";
 import { AuthenticationSection } from "../components/auth/AuthenticationSection";
 import { EntityCard } from "../components/entity/EntityCard";
@@ -214,11 +214,11 @@ export function Home() {
                 <EntitySection />
               </div>
 
-              {/* Purchase Panel */}
+              {/* Commit Panel */}
               {isEligible && address && (
                 <div className="flex flex-col gap-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Make a Purchase</h2>
-                  <PurchaseCard entityID={entity.EntityID} walletAddress={address} />
+                  <h2 className="text-xl font-semibold text-gray-900">Commit funds</h2>
+                  <CommitCard entityID={entity.EntityID} saleSpecificEntityID={entity.SaleSpecificEntityID} walletAddress={address} />
                 </div>
               )}
 
