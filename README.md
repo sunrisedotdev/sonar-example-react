@@ -23,6 +23,15 @@ pnpm dev
 
 The app will be available at `http://localhost:3000`.
 
+The example uses a [SettlementSale](https://github.com/sunrisedotdev/sonar/blob/main/contracts/src/SettlementSale.sol) contract on Base Sepolia.
+
+In order to test committing funds, you will need to have USDC to commit and ETH to pay for the gas.
+
+Faucets:
+
+- USDC: <https://faucet.circle.com/>
+- ETH: <https://docs.base.org/base-chain/tools/network-faucets>
+
 ## What This Example Demonstrates
 
 - **Provider setup** — configuring `SonarProvider` with wagmi and React Query
