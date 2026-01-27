@@ -1,5 +1,5 @@
 import { useCommitmentData } from "@echoxyz/sonar-react";
-import { Commitment, Hex, WalletTokenAmount } from "@echoxyz/sonar-core";
+import { Commitment, WalletTokenAmount } from "@echoxyz/sonar-core";
 
 function formatAmount(amount: bigint, decimals: number): string {
   const divisor = BigInt(10 ** decimals);
@@ -7,32 +7,8 @@ function formatAmount(amount: bigint, decimals: number): string {
   return `$${integerPart.toLocaleString()}`;
 }
 
-function shortenAddress(address: Hex): string {
-  if (address.length <= 10) return address;
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
 function calculateCommitmentTotal(amounts: WalletTokenAmount[]): bigint {
   return amounts.reduce((sum, item) => sum + BigInt(item.Amount), BigInt(0));
-}
-
-function findTopWallet(amounts: WalletTokenAmount[]): Hex {
-  const walletTotals = new Map<Hex, bigint>();
-  for (const item of amounts) {
-    const current = walletTotals.get(item.Wallet) ?? BigInt(0);
-    walletTotals.set(item.Wallet, current + BigInt(item.Amount));
-  }
-
-  let topWallet = amounts[0].Wallet;
-  let topAmount = BigInt(0);
-  for (const [wallet, amount] of walletTotals) {
-    if (amount > topAmount) {
-      topAmount = amount;
-      topWallet = wallet;
-    }
-  }
-
-  return topWallet;
 }
 
 // The timestamp is a string in ISO 8601 format
@@ -55,7 +31,6 @@ function CommitmentRow({ commitment, decimals }: CommitmentRowProps) {
   // The commitment data gives the amount by wallet and payment token,
   // but for simplicity, we just show the total amount and the wallet with the most committed amount.
   const total = calculateCommitmentTotal(commitment.Amounts);
-  const topWallet = findTopWallet(commitment.Amounts);
 
   return (
     <div className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
@@ -63,7 +38,7 @@ function CommitmentRow({ commitment, decimals }: CommitmentRowProps) {
         <span className="text-sm font-medium text-gray-900">
           {formatAmount(total, decimals)}
         </span>
-        <span className="text-xs text-gray-500">{shortenAddress(topWallet)}</span>
+        <span className="text-xs text-gray-500">{commitment.SaleSpecificEntityID}</span>
       </div>
       <span className="text-xs text-gray-400">{formatTimestamp(commitment.CreatedAt)}</span>
     </div>
