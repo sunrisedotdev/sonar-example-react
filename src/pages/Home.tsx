@@ -10,6 +10,7 @@ import { EntityCard } from "../components/entity/EntityCard";
 import { NotEligibleMessage } from "../components/sale/NotEligibleMessage";
 import { EntitiesList } from "../components/registration/EntitiesList";
 import { EligibilityResults } from "../components/registration/EligibilityResults";
+import { CommitmentDataCard } from "../components/sale/CommitmentDataCard";
 
 export function Home() {
   const [saleIsLive, setSaleIsLive] = useState(false);
@@ -214,16 +215,26 @@ export function Home() {
                 <EntitySection />
               </div>
 
-              {/* Commit Panel */}
+              {/* Commit Card */}
               {isEligible && address && (
                 <div className="flex flex-col gap-4">
                   <h2 className="text-xl font-semibold text-gray-900">Commit funds</h2>
-                  <CommitCard entityID={entity.EntityID} saleSpecificEntityID={entity.SaleSpecificEntityID} walletAddress={address} />
+                  <CommitCard
+                    entityID={entity.EntityID}
+                    saleSpecificEntityID={entity.SaleSpecificEntityID}
+                    walletAddress={address}
+                  />
                 </div>
               )}
 
               {/* Not Eligible Message */}
               {entity && !isEligible && <NotEligibleMessage sonarHomeURL={sonarHomeURL.href} />}
+
+              {/* Commitment Data Card */}
+              <div className="flex flex-col gap-4">
+                <h2 className="text-xl font-semibold text-gray-900">Sale Commitment Data</h2>
+                <CommitmentDataCard saleUUID={saleUUID} />
+              </div>
             </div>
           )}
         </div>
