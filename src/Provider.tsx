@@ -2,14 +2,14 @@ import { WagmiProvider, createConfig, http } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { SonarProvider } from "@echoxyz/sonar-react";
-import { sonarConfig } from "./config";
+import { sonarConfig, baseRPCURL } from "./config";
 import { baseSepolia } from "wagmi/chains";
 
 const config = createConfig(
   getDefaultConfig({
     chains: [baseSepolia],
     transports: {
-      [baseSepolia.id]: http(),
+      [baseSepolia.id]: http(baseRPCURL),
     },
 
     // Required API Keys
@@ -29,7 +29,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
     <SonarProvider config={sonarConfig}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <ConnectKitProvider>{children}</ConnectKitProvider>
+          <ConnectKitProvider options={{ enforceSupportedChains: true }}>{children}</ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </SonarProvider>
