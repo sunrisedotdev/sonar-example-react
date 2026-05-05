@@ -14,7 +14,15 @@ However, since tokens are stored in the browser, this approach is less secure th
 
 ## Running the App Locally
 
-By default this app is configured to use a test Sonar sale and contract and should work out of the box. If you want to point it at a different sale or contract, you can modify the env vars in `.env.local`. You can find the values for your sale on the [Echo founder dashboard](https://app.echo.xyz/founder).
+Copy the env template and fill in the values for your sale:
+
+```sh
+cp .env.example .env
+```
+
+Edit `.env` and set `VITE_SALE_UUID`, `VITE_OAUTH_CLIENT_UUID`, `VITE_SALE_CONTRACT_ADDRESS`, and `VITE_PAYMENT_TOKEN_ADDRESS`. You can find these values for your sale on the [Echo founder dashboard](https://app.echo.xyz/founder).
+
+The app will throw at startup if any of the required vars are missing.
 
 ```sh
 pnpm i
@@ -31,6 +39,15 @@ Faucets:
 
 - USDC: <https://faucet.circle.com/>
 - ETH: <https://docs.base.org/base-chain/tools/network-faucets>
+
+### RPC Configuration
+
+By default, the app uses the public Base Sepolia RPC endpoint, which is *rate-limited and not suitable for production use*.
+
+For production or any meaningful testing, set the env var `VITE_BASE_RPC_URL` to your private RPC endpoint from [Alchemy](https://www.alchemy.com/), [Infura](https://www.infura.io/), [QuickNode](https://www.quicknode.com/), or similar.
+
+**Be careful!** Exposing an RPC URL on the frontend allows anyone to extract and use your private RPC keys.
+Only use scoped and rate-limited API keys, never expose your master private keys.
 
 ## What This Example Demonstrates
 
