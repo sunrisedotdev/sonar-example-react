@@ -2,14 +2,14 @@ import { WagmiProvider, createConfig, http } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { SonarProvider } from "@echoxyz/sonar-react";
-import { sonarConfig, baseRPCURL } from "./config";
+import { sonarConfig, rpcURL } from "./config";
 import { baseSepolia } from "wagmi/chains";
 
 const config = createConfig(
   getDefaultConfig({
     chains: [baseSepolia],
     transports: {
-      [baseSepolia.id]: http(baseRPCURL),
+      [baseSepolia.id]: http(rpcURL),
     },
 
     // Required API Keys
@@ -19,7 +19,7 @@ const config = createConfig(
     appName: "Sonar React example app",
     appDescription:
       "React app showing how to integrate with the Sonar API via the sonar-react and sonar-core libraries.",
-  })
+  }),
 );
 
 const queryClient = new QueryClient();
